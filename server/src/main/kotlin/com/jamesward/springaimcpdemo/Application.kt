@@ -87,6 +87,17 @@ class MyTools {
         return maybeNumber ?: Random.nextInt(100)
     }
 
+    // sampling
+
+    @McpTool(description = "tell a joke")
+    fun loudJoke(exchange: McpSyncServerExchange): String {
+        val samplingRequest = McpSchema.CreateMessageRequest.builder()
+            .messages(listOf(McpSchema.SamplingMessage(McpSchema.Role.ASSISTANT, McpSchema.TextContent("Tell me a joke!"))))
+            .build()
+        val result = exchange.createMessage(samplingRequest)
+        return (result.content() as? McpSchema.TextContent)?.text()?.uppercase() ?: "no joke"
+    }
+
 }
 
 @Component

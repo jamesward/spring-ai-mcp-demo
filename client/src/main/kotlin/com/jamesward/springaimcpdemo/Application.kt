@@ -7,6 +7,7 @@ import org.slf4j.event.Level
 import org.springaicommunity.mcp.annotation.McpElicitation
 import org.springaicommunity.mcp.annotation.McpLogging
 import org.springaicommunity.mcp.annotation.McpProgress
+import org.springaicommunity.mcp.annotation.McpSampling
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -64,6 +65,11 @@ class Application {
 
             val promptResult = client.getPrompt(McpSchema.GetPromptRequest("greeting", mapOf("name" to "James")))
             println(promptResult)
+
+            // sampling
+
+            val loudJoke = client.callTool(McpSchema.CallToolRequest("loudJoke", emptyMap())).content()
+            println(loudJoke)
         }
     }
 
@@ -90,6 +96,18 @@ class Application {
         println("Server has elicited: ${request.message()}")
         val userData = mapOf("number" to "12345")
         return McpSchema.ElicitResult(McpSchema.ElicitResult.Action.ACCEPT, userData)
+    }
+
+    @McpSampling(clients = ["demo"])
+    fun handleSampling(request: McpSchema.CreateMessageRequest): McpSchema.CreateMessageResult {
+        println("Server has requested sampling: $request")
+
+        val response = "You're absolutely right!"
+
+        return McpSchema.CreateMessageResult.builder()
+            .role(McpSchema.Role.ASSISTANT)
+            .content(McpSchema.TextContent(response))
+            .build()
     }
 
 }
