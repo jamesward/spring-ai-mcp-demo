@@ -21,7 +21,7 @@ subprojects {
 
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.ai:spring-ai-bom:1.1.0-M3")
+            mavenBom("org.springframework.ai:spring-ai-bom:1.1.0-M4")
         }
     }
 }
