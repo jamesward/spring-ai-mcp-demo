@@ -3,6 +3,7 @@ package com.jamesward.springaimcpdemo;
 import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.springaicommunity.mcp.annotation.*;
+import org.springaicommunity.mcp.context.McpSyncRequestContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
@@ -53,7 +54,8 @@ class MyTools {
     }
 
     @McpTool(description = "divide two numbers")
-    public int divide(int x, int y, @McpProgressToken String progressToken, McpSyncServerExchange exchange) {
+    public int divide(int x, int y, McpSyncServerExchange exchange, McpMeta mcpMeta) { //, @McpProgressToken String progressToken
+        var progressToken = mcpMeta.get("progressToken");
         exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 0.0, 1.0, "dividing"));
         int result = x / y;
         exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 1.0, 1.0, "divided"));
@@ -87,13 +89,15 @@ class MyTools {
     }
 
     @McpTool(description = "tell a joke")
-    public String loudJoke(McpSyncServerExchange exchange) {
-        McpSchema.CreateMessageRequest samplingRequest = McpSchema.CreateMessageRequest.builder()
-            .messages(List.of(new McpSchema.SamplingMessage(McpSchema.Role.ASSISTANT, new McpSchema.TextContent("Tell me a joke!"))))
-            .build();
-        McpSchema.CreateMessageResult result = exchange.createMessage(samplingRequest);
-        McpSchema.TextContent content = (McpSchema.TextContent) result.content();
-        return content != null ? content.text().toUpperCase() : "NO JOKE";
+    public String loudJoke(McpSyncRequestContext context) {
+        if (context.sampleEnabled()) {
+            var result = context.sample("Tell me a joke!");
+            var content = (McpSchema.TextContent) result.content();
+            return content.text().toUpperCase();
+        }
+        else {
+            return "NO JOKE";
+        }
     }
 }
 
