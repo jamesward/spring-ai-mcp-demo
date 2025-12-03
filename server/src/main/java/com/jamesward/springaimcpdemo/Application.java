@@ -54,8 +54,7 @@ class MyTools {
     }
 
     @McpTool(description = "divide two numbers")
-    public int divide(int x, int y, McpSyncServerExchange exchange, McpMeta mcpMeta) { //, @McpProgressToken String progressToken
-        var progressToken = mcpMeta.get("progressToken");
+    public int divide(int x, int y, McpSyncServerExchange exchange, @McpProgressToken Object progressToken) {
         exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 0.0, 1.0, "dividing"));
         int result = x / y;
         exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 1.0, 1.0, "divided"));
@@ -68,20 +67,17 @@ class MyTools {
                 .map(ignored -> "hello, " + name);
     }
 
-    @McpTool(description = "generate a random number")
-    public int random(McpSyncServerExchange exchange) {
-        Random rand = new Random();
-        Integer maybeNumber = null;
+    record UserRandomNumber(Number number) { }
 
-        if (rand.nextBoolean()) {
-            Map<String, Object> schema = Map.of(
-                "type", "object",
-                "properties", Map.of("number", Map.of("type", "integer")),
-                "required", List.of("number")
-            );
-            McpSchema.ElicitResult userInput = exchange.createElicitation(new McpSchema.ElicitRequest("what is your favorite number?", schema));
-            if (userInput.action() == McpSchema.ElicitResult.Action.ACCEPT) {
-                maybeNumber = (Integer) userInput.content().get("number");
+    @McpTool(description = "generate a random number")
+    public Number random(McpSyncRequestContext context) {
+        Random rand = new Random();
+        Number maybeNumber = null;
+
+        if (rand.nextBoolean() && context.elicitEnabled()) {
+            var elicitResult = context.elicit(UserRandomNumber.class);
+            if (elicitResult.action() == McpSchema.ElicitResult.Action.ACCEPT) {
+                maybeNumber = elicitResult.structuredContent().number();
             }
         }
 
