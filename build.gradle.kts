@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "3.5.10" apply false
+    id("org.springframework.boot") version "4.0.3" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
 }
 
@@ -10,7 +10,7 @@ subprojects {
 
     configure<JavaPluginExtension> {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
     }
 
@@ -21,7 +21,7 @@ subprojects {
 
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.ai:spring-ai-bom:1.1.2")
+            mavenBom("org.springframework.ai:spring-ai-bom:1.1.3")
         }
     }
 }
