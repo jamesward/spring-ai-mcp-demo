@@ -1,15 +1,27 @@
 package com.jamesward.springaimcpdemo;
 
+import gg.jte.generated.precompiled.StaticTemplates;
 import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
-import org.springaicommunity.mcp.annotation.*;
-import org.springaicommunity.mcp.context.McpSyncRequestContext;
+import org.springframework.ai.mcp.annotation.*;
+import org.springframework.ai.mcp.annotation.context.McpSyncRequestContext;
+import org.springframework.ai.mcp.annotation.context.MetaProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.webjars.WebJarVersionLocator;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -126,4 +138,45 @@ class Prompt {
                 .filter(s -> s.toLowerCase().startsWith(prefix.toLowerCase()))
                 .toList();
     }
+}
+
+@Component
+class DiceApp {
+
+    StaticTemplates staticTemplates = new StaticTemplates();
+
+    String appExtJs;
+
+    public DiceApp() throws IOException {
+        WebJarVersionLocator webJarVersionLocator = new WebJarVersionLocator();
+        Resource appExt = new ClassPathResource(Objects.requireNonNull(webJarVersionLocator.fullPath("modelcontextprotocol__ext-apps", "dist/src/app-with-deps.js")));
+        appExtJs = appExt.getContentAsString(Charset.defaultCharset());
+    }
+
+    @McpResource(name = "Dice App Resource",
+            uri = "ui://dice/dice-app.html",
+            mimeType = "text/html;profile=mcp-app"
+    )
+    public String getDiceAppResource() {
+        return staticTemplates.diceApp(appExtJs).render();
+    }
+
+    @McpTool(
+            title = "Roll the Dice",
+            name = "roll-the-dice",
+            description = "Rolls the dice",
+            metaProvider = DiceMetaProvider.class)
+    public String rollTheDice() {
+        return "Opening dice roller app.";
+    }
+
+    public static final class DiceMetaProvider implements MetaProvider {
+        @Override
+        public Map<String, Object> getMeta() {
+            return Map.of("ui",
+                    Map.of(
+                            "resourceUri", "ui://dice/dice-app.html"));
+        }
+    }
+
 }
