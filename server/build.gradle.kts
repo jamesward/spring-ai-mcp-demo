@@ -15,4 +15,10 @@ dependencies {
 
     implementation("org.webjars:webjars-locator-lite:1.1.3")
     runtimeOnly("org.webjars.npm:modelcontextprotocol__ext-apps:1.5.0")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

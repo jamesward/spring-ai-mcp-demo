@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dice Roller</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        .dice { font-size: 80px; }
+        button { font-size: 18px; padding: 8px 16px; }
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #1d1e22; color: white; }
+        }
+    </style>
+</head>
+<body>
+<div class="dice">
+    <span id="die1">⚀</span>
+    <span id="die2">⚀</span>
+</div>
+<br>
+<button id="roll-dice-btn">Roll Dice</button>
+<script type="module">
+    import { App } from "https://unpkg.com/@modelcontextprotocol/ext-apps@0.1/app-with-deps";
+    const app = new App({ name: "roll-the-dice", version: "1.0.0" });
+    app.connect().then(() => rollDice());
+
+    const diceFaces = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+    document.getElementById("roll-dice-btn").addEventListener("click", () => rollDice());
+
+    async function rollDice() {
+        const die1El = document.getElementById("die1");
+        const die2El = document.getElementById("die2");
+        let rolls = 0, f1, f2;
+        const anim = setInterval(() => {
+            f1 = Math.floor(Math.random() * 6);
+            f2 = Math.floor(Math.random() * 6);
+            die1El.textContent = diceFaces[f1];
+            die2El.textContent = diceFaces[f2];
+            if (++rolls > 15) {
+                clearInterval(anim);
+                app.updateModelContext({
+                    content: [{ type: "text", text: `Dice roll: ${f1+1} and ${f2+1}` }]
+                });
+            }
+        }, 30);
+    }
+</script>
+</body>
+</html>

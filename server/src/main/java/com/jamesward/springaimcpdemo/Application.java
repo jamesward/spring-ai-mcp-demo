@@ -111,14 +111,23 @@ class MyTools {
 @Component
 class MyResources {
 
+    @McpResource(uri = "info://server", name = "Server Info", description = "Static server metadata")
+    public String serverInfo() {
+        return "Spring AI MCP Demo Server v1.0 — Java " + Runtime.version();
+    }
+
     @McpResource(uri = "config://{key}", name = "Configuration", description = "Provides configuration data")
     public String getConfig(String key) {
         return key != null ? new StringBuilder(key).reverse().toString() : "default";
     }
 
+    static final List<String> CONFIG_KEYS = List.of(
+            "database.url", "database.port", "database.name",
+            "app.name", "app.version", "app.debug");
+
     @McpComplete(uri = "config://{key}")
     public List<String> completeConfig(String prefix) {
-        return Stream.of("asdf", "zxcv")
+        return CONFIG_KEYS.stream()
                 .filter(s -> s.startsWith(prefix))
                 .toList();
     }
@@ -179,4 +188,38 @@ class DiceApp {
         }
     }
 
+}
+
+@Component
+class ShoppingListApp {
+
+    StaticTemplates staticTemplates = new StaticTemplates();
+    String appExtJs;
+
+    public ShoppingListApp() throws IOException {
+        WebJarVersionLocator webJarVersionLocator = new WebJarVersionLocator();
+        Resource appExt = new ClassPathResource(Objects.requireNonNull(webJarVersionLocator.fullPath("modelcontextprotocol__ext-apps", "dist/src/app-with-deps.js")));
+        appExtJs = appExt.getContentAsString(Charset.defaultCharset());
+    }
+
+    @McpResource(name = "Shopping List App",
+            uri = "ui://shopping/shopping-list.html",
+            mimeType = "text/html;profile=mcp-app")
+    public String getShoppingListResource() {
+        return staticTemplates.shoppingList(appExtJs).render();
+    }
+
+    @McpTool(title = "Shopping List", name = "shopping-list",
+            description = "Opens the shopping list app",
+            metaProvider = ShoppingListMetaProvider.class)
+    public String openShoppingList() {
+        return "Opening shopping list app.";
+    }
+
+    public static final class ShoppingListMetaProvider implements MetaProvider {
+        @Override
+        public Map<String, Object> getMeta() {
+            return Map.of("ui", Map.of("resourceUri", "ui://shopping/shopping-list.html"));
+        }
+    }
 }

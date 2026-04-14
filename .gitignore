@@ -38,6 +38,10 @@ out/
 
 ### Kotlin ###
 .kotlin
-/infra/cdk.out/
-/infra/.venv/
-/infra/__pycache__/
+/agentcore/infra/cdk.out/
+/agentcore/infra/.venv/
+/agentcore/infra/__pycache__/
+/agentcore/infra/.terraform/
+/agentcore/infra/.terraform.lock.hcl
+/agentcore/infra/terraform.tfstate
+/agentcore/infra/terraform.tfstate.backup
