@@ -1,19 +1,15 @@
 package com.jamesward.springaimcpdemo;
 
 import gg.jte.generated.precompiled.StaticTemplates;
-import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.springframework.ai.mcp.annotation.*;
 import org.springframework.ai.mcp.annotation.context.McpSyncRequestContext;
 import org.springframework.ai.mcp.annotation.context.MetaProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.webjars.WebJarVersionLocator;
 import reactor.core.publisher.Mono;
 
@@ -59,16 +55,17 @@ class MyTools {
     }
 
     @McpTool(description = "subtract two numbers")
-    public int sub(int x, int y, McpSyncServerExchange exchange) {
-        exchange.loggingNotification(new McpSchema.LoggingMessageNotification(McpSchema.LoggingLevel.INFO, "my-log", "subtract " + x + " - " + y));
+    public int sub(int x, int y, McpSyncRequestContext ctx) {
+        ctx.info("subtract " + x + " - " + y);
         return x - y;
     }
 
     @McpTool(description = "divide two numbers")
-    public int divide(int x, int y, McpSyncServerExchange exchange, @McpProgressToken Object progressToken) {
-        exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 0.0, 1.0, "dividing"));
+    public int divide(int x, int y, McpSyncRequestContext ctx) throws InterruptedException {
+        ctx.progress(0);
         int result = x / y;
-        exchange.progressNotification(new McpSchema.ProgressNotification(progressToken, 1.0, 1.0, "divided"));
+        Thread.sleep(4000);
+        ctx.progress(100);
         return result;
     }
 
