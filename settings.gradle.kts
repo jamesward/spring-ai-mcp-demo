@@ -1,6 +1,6 @@
 rootProject.name = "spring-ai-mcp-demo"
 
-include("server", "client")
+include("server", "client", "codemode", "toolfilter")
 
 dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
