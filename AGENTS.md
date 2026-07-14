@@ -6,7 +6,7 @@ Spring AI MCP demo — two Gradle modules (`server/` and `client/`) communicatin
 
 ## Stack
 
-- Java 25, Spring Boot 4.0.5, Spring AI 2.0.0-M4, Gradle 9.4.1 (Kotlin DSL, always use `./gradlew`)
+- Java 25, Spring Boot 4.1.0, Spring AI 2.0.0, Gradle 9.6.1 (Kotlin DSL, always use `./gradlew`)
 - Server: `spring-ai-starter-mcp-server-webflux` + JTE templates
 - Client: `spring-ai-starter-mcp-client-webflux` (non-web, exits after running)
 
