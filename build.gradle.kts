@@ -22,7 +22,7 @@ subprojects {
 
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.ai:spring-ai-bom:2.0.0")
+            mavenBom("org.springframework.ai:spring-ai-bom:2.0.1")
         }
     }
 }
