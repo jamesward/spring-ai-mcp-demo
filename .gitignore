@@ -45,3 +45,6 @@ out/
 /agentcore/infra/.terraform.lock.hcl
 /agentcore/infra/terraform.tfstate
 /agentcore/infra/terraform.tfstate.backup
+
+# Agent Skills extracted by the build
+/.kiro/skills/
