@@ -109,4 +109,5 @@ source/doc tools for API questions. In Claude Code its tools are deferred: load 
 
 ### Exceptions to zen-of-projects
 
+- Strict compilation (`-Xlint:all -Werror`) is not enabled yet: `client/.../Application.java` uses 12 deprecated MCP SDK constructors/builders (`CallToolRequest`, `ReadResourceRequest`, `CompleteRequest`, `GetPromptRequest`, `TextContent`, `CreateMessageResult`). Migrate them first, then enable it.
 - `./gradlew bootRun` (and any task that calls Amazon Bedrock) needs AWS credentials and is paid: never run it in the maintenance routine.

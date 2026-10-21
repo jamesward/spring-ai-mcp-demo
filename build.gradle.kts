@@ -30,7 +30,7 @@ subprojects {
 
 // Agent Skills, extracted with ./gradlew extractSkillsJars
 dependencies {
-    skill("com.jamesward:skills:0.0.14")
+    skill("com.jamesward:skills:0.0.17")
 }
 
 skillsjars {
