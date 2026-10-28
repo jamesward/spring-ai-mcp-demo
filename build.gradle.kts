@@ -1,6 +1,6 @@
 plugins {
     id("com.skillsjars.gradle-plugin") version "0.2.0"
-    id("org.springframework.boot") version "4.1.1" apply false
+    id("org.springframework.boot") version "4.1.2" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("gg.jte.gradle") version("3.2.4") apply false
 }
@@ -23,14 +23,14 @@ subprojects {
 
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.ai:spring-ai-bom:2.0.1")
+            mavenBom("org.springframework.ai:spring-ai-bom:2.0.2")
         }
     }
 }
 
 // Agent Skills, extracted with ./gradlew extractSkillsJars
 dependencies {
-    skill("com.jamesward:skills:0.0.17")
+    skill("com.jamesward:skills:0.0.18")
 }
 
 skillsjars {
