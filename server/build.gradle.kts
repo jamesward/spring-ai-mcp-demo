@@ -10,8 +10,8 @@ jte {
 
 dependencies {
     implementation("org.springframework.ai:spring-ai-starter-mcp-server-webflux")
-    implementation("gg.jte:jte-runtime:3.2.4")
-    jteGenerate("gg.jte:jte-models:3.2.4")
+    implementation("gg.jte:jte-runtime:3.2.5")
+    jteGenerate("gg.jte:jte-models:3.2.5")
 
     implementation("org.webjars:webjars-locator-lite:1.1.5")
     runtimeOnly("org.webjars.npm:modelcontextprotocol__ext-apps:1.5.0")
