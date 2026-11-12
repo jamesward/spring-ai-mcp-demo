@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class McpServerIntegrationTest {
@@ -97,8 +98,9 @@ class McpServerIntegrationTest {
                 new McpSchema.CallToolRequest("sub", Map.of("x", 10, "y", 3)));
 
         assertThat(result.content().toString()).contains("7");
-        assertThat(logMessages).anyMatch(log ->
-                log.level() == McpSchema.LoggingLevel.INFO && log.data().contains("subtract"));
+        // notifications arrive asynchronously, possibly after the call result
+        await().untilAsserted(() -> assertThat(logMessages).anyMatch(log ->
+                log.level() == McpSchema.LoggingLevel.INFO && log.data().contains("subtract")));
     }
 
     @Test
@@ -108,8 +110,10 @@ class McpServerIntegrationTest {
                         Map.of("progressToken", "p1")));
 
         assertThat(result.content().toString()).contains("5");
-        assertThat(progressNotifications).hasSizeGreaterThanOrEqualTo(2);
-        assertThat(progressNotifications.getLast().progress()).isEqualTo(1.0);
+        await().untilAsserted(() -> {
+            assertThat(progressNotifications).hasSizeGreaterThanOrEqualTo(2);
+            assertThat(progressNotifications.getLast().progress()).isEqualTo(1.0);
+        });
     }
 
     @Test
