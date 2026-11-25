@@ -1,6 +1,6 @@
 plugins {
     id("com.skillsjars.gradle-plugin") version "0.2.0"
-    id("org.springframework.boot") version "4.1.2" apply false
+    id("org.springframework.boot") version "4.2.0" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("gg.jte.gradle") version("3.2.5") apply false
 }
@@ -23,7 +23,7 @@ subprojects {
 
     configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.ai:spring-ai-bom:2.0.2")
+            mavenBom("org.springframework.ai:spring-ai-bom:2.1.0")
         }
     }
 }
